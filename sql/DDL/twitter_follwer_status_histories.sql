@@ -1,5 +1,5 @@
 CREATE TABLE `twitter_follwer_status_histories` (
-  `status_id` int(11) DEFAULT NULL,
+  `key_name` varchar(255) DEFAULT NULL,
   `follower` int(11) DEFAULT NULL,
   `get_date` datetime DEFAULT NULL,
   `created_at` datetime DEFAULT NULL,
@@ -12,5 +12,5 @@ CREATE TABLE `twitter_follwer_status_histories` (
   `screen_name` varchar(255) DEFAULT NULL,
   `profile_image_url` varchar(255) DEFAULT NULL,
   `statuses_count` int(11) DEFAULT NULL,
-  KEY `twitter_follwer_status_histories_key1` (`status_id`,`get_date`)
+  KEY `twitter_follwer_status_histories_key1` (`key_name`,`get_date`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
