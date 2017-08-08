@@ -40,7 +40,7 @@ BBB
 
 @today = DateTime.now
 
-@db = Sequel.mysql2('anime_admin_development', :host=>'localhost', :user=>'root', :password=>'', :port=>'3306')
+@db = Sequel.mysql2(ARGV[0], :host=>'localhost', :user=>'root', :password=>'', :port=>'3306')
 
 @status_rows = []
 @history_rows = []
@@ -52,7 +52,6 @@ BBB
 def connect_twitter(account_list)
   @tw.users(account_list).each do |user|
     @status_rows << [
-        @account_key_hash[user.screen_name],
         user.followers_count,
         @today,
         @today,
@@ -67,7 +66,7 @@ def connect_twitter(account_list)
     ] if @account_key_hash[user.screen_name] != nil
 
     @history_rows << [
-        @account_key_hash[user.screen_name],
+        user.screen_name,
         user.followers_count,
         @today,
         @today,
@@ -92,24 +91,9 @@ def connect_twitter(account_list)
   end
 end
 
-<<T
-  `voice_actor_master_id` int(11) NOT NULL,
-  `follower` int(11) DEFAULT NULL,
-  `created_at` datetime DEFAULT NULL,
-  `updated_at` datetime DEFAULT NULL,
-  `name` varchar(255) DEFAULT NULL,
-  `description` varchar(255) DEFAULT NULL,
-  `favourites_count` int(11) DEFAULT NULL,
-  `friends_count` int(11) DEFAULT NULL,
-  `listed_count` int(11) DEFAULT NULL,
-  `screen_name` varchar(255) DEFAULT NULL,
-T
-
 def save_db()
   #結果をstatusに格納(truncate -> insert)
-  @db[:voice_actor_twitter_follwer_status].truncate
-  @db[:voice_actor_twitter_follwer_status].import([
-                                                      :voice_actor_master_id,
+  @db[:twitter_follwer_status].import([
                                                       :follower,
                                                       :created_at,
                                                       :updated_at,
@@ -124,8 +108,8 @@ def save_db()
                                                   ], @status_rows)
 
   #結果をhistoryに格納(insertのみ)
-  @db[:voice_actor_twitter_follwer_status_histories].import([
-                                                                :voice_actor_master_id,
+  @db[:twitter_follwer_status_histories].import([
+                                                                :key_name,
                                                                 :follower,
                                                                 :get_date,
                                                                 :created_at,
@@ -144,31 +128,30 @@ end
 ONE_REQUEST_LIMIT_NUM = 100
 ONE_REQUEST_SLEEP_SEC = 30
 
-
-
-rows = @db[:voice_actor_masters].all
-
 account_list = []
 
-rows.each do |row|
-  @account_key_hash[row[:twitter_account]] = row[:id]
-  account_list << row[:twitter_account]
+File.open(ARGV[1], 'r') do |f|
+  while line  = f.gets
+    line = line.chomp
+    account_list << line.split('/')[3] if line != ''
+  end
 end
+
+exit(0)
+
+@db[:twitter_follwer_status].truncate
 
 account_list.each_slice(ONE_REQUEST_LIMIT_NUM).to_a.each do |account_slist|
   puts account_slist.size
   #配列を区切ってTwitterにリクエスト
   connect_twitter(account_slist)
 
-  #p @status_rows
-  #save_db()
-  #exit;
-
+  save_db()
   puts 'sleep'
   sleep ONE_REQUEST_SLEEP_SEC
 end
 
-save_db()
+
 
 p account_list - @twitter_result_account
 
