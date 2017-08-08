@@ -12,7 +12,7 @@ sqlフォルダを参照
 ```
 mysql database_name < twitter_follwer_status.sql
 mysql database_name < twitter_follwer_status_histories.sql
-``` []()
+```
 
 
 ```
