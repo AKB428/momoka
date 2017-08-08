@@ -13,4 +13,4 @@ CREATE TABLE `twitter_follwer_status_histories` (
   `profile_image_url` varchar(255) DEFAULT NULL,
   `statuses_count` int(11) DEFAULT NULL,
   KEY `twitter_follwer_status_histories_key1` (`key_name`,`get_date`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin;

@@ -55,15 +55,16 @@ def connect_twitter(account_list)
         user.followers_count,
         @today,
         @today,
-        user.name,
-        user.description.to_s,
+        #user.name,
+        #user.description.to_s,
         user.favorites_count,
         user.friends_count,
         user.listed_count,
         user.screen_name,
         user.profile_image_url.to_s,
         user.statuses_count
-    ] if @account_key_hash[user.screen_name] != nil
+    ]
+    #if @account_key_hash[user.screen_name] != nil
 
     @history_rows << [
         user.screen_name,
@@ -71,23 +72,19 @@ def connect_twitter(account_list)
         @today,
         @today,
         @today,
-        user.name,
-        user.description.to_s,
+      #  user.name,
+       # user.description.to_s,
         user.favorites_count,
         user.friends_count,
         user.listed_count,
         user.screen_name,
         user.profile_image_url.to_s,
         user.statuses_count
-    ] if @account_key_hash[user.screen_name] != nil
+    ]
+    #if @account_key_hash[user.screen_name] != nil
 
-    if @account_key_hash[user.screen_name] == nil
-      puts "#{user.name} #{user.screen_name}"
-      pp user.to_hash
-    else
+
       @twitter_result_account << user.screen_name
-    end
-
   end
 end
 
@@ -97,8 +94,8 @@ def save_db()
                                                       :follower,
                                                       :created_at,
                                                       :updated_at,
-                                                      :name,
-                                                      :description,
+                                                    #  :name,
+                                                     # :description,
                                                       :favourites_count,
                                                       :friends_count,
                                                       :listed_count,
@@ -114,8 +111,8 @@ def save_db()
                                                                 :get_date,
                                                                 :created_at,
                                                                 :updated_at,
-                                                                :name,
-                                                                :description,
+                                                      #          :name,
+                                                       #         :description,
                                                                 :favourites_count,
                                                                 :friends_count,
                                                                 :listed_count,
@@ -125,8 +122,8 @@ def save_db()
                                                             ], @history_rows)
 end
 
-ONE_REQUEST_LIMIT_NUM = 100
-ONE_REQUEST_SLEEP_SEC = 30
+ONE_REQUEST_LIMIT_NUM = 60
+ONE_REQUEST_SLEEP_SEC = 60
 
 account_list = []
 
@@ -136,8 +133,6 @@ File.open(ARGV[1], 'r') do |f|
     account_list << line.split('/')[3] if line != ''
   end
 end
-
-exit(0)
 
 @db[:twitter_follwer_status].truncate
 
@@ -149,6 +144,7 @@ account_list.each_slice(ONE_REQUEST_LIMIT_NUM).to_a.each do |account_slist|
   save_db()
   puts 'sleep'
   sleep ONE_REQUEST_SLEEP_SEC
+  exit(0)
 end
 
 
