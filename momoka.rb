@@ -144,7 +144,9 @@ account_list.each_slice(ONE_REQUEST_LIMIT_NUM).to_a.each do |account_slist|
   save_db()
   puts 'sleep'
   sleep ONE_REQUEST_SLEEP_SEC
-  exit(0)
+
+  @status_rows = []
+  @history_rows = []
 end
 
 

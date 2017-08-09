@@ -22,6 +22,13 @@ bundle install
 ## ツイッターのデータを収集
 
 ```
-bundle exec ruby momoka.rb
+bundle exe ruby momoka.rb database_name list.txt
+```
+
+
+例
+
+```
+bundle exe ruby momoka.rb circle_twitter private/tw_list_all.txt
 ```
 
