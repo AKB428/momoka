@@ -50,6 +50,8 @@ BBB
 @twitter_result_account = []
 
 def connect_twitter(account_list)
+  @today = DateTime.now
+
   @tw.users(account_list).each do |user|
     @status_rows << [
         user.followers_count,
