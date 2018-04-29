@@ -50,6 +50,10 @@ BBB
 @twitter_result_account = []
 
 def connect_twitter(account_list)
+  @today = DateTime.now
+
+  result_account = []
+
   @tw.users(account_list).each do |user|
     @status_rows << [
         user.followers_count,
@@ -84,8 +88,10 @@ def connect_twitter(account_list)
     #if @account_key_hash[user.screen_name] != nil
 
 
-      @twitter_result_account << user.screen_name
+    result_account << user.screen_name
   end
+
+  result_account
 end
 
 def save_db()
@@ -136,10 +142,31 @@ end
 
 @db[:twitter_follwer_status].truncate
 
+puts account_list.size
+
+# 15分 900 = 1時間 3600
+cost_hour = account_list.size / 3600
+puts "予想時間 #{cost_hour} 時間"
+
+
 account_list.each_slice(ONE_REQUEST_LIMIT_NUM).to_a.each do |account_slist|
   puts account_slist.size
   #配列を区切ってTwitterにリクエスト
-  connect_twitter(account_slist)
+
+  result_account = []
+
+  while result_account.size == 0
+    begin
+      result_account = connect_twitter(account_slist)
+    rescue => e
+      p  e
+      sleep ONE_REQUEST_SLEEP_SEC
+    end
+  end
+
+  puts "result:" + result_account.size.to_s
+
+  @twitter_result_account << result_account
 
   save_db()
   puts 'sleep'
@@ -148,8 +175,6 @@ account_list.each_slice(ONE_REQUEST_LIMIT_NUM).to_a.each do |account_slist|
   @status_rows = []
   @history_rows = []
 end
-
-
 
 p account_list - @twitter_result_account
 
