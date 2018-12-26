@@ -178,5 +178,9 @@ end
 
 p account_list - @twitter_result_account
 
+diff_size = account_list.length - @twitter_result_account.length
+
+puts "#{diff_size} = #{account_list.length} - #{@twitter_result_account.length}"
+
 #処理を終了する ループはcrontabでやる
 #６時間に１度ぐらいで
