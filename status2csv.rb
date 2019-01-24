@@ -1,7 +1,7 @@
 #
 # ステータステーブルをCSV形式で出力
 #
-# bundle exe ruby database_name status2csv.rb > /tmp/va_status.csv
+# bundle exe ruby status2csv.rb database_name original_list.txt > /tmp/va_status.csv
 #
 #
 
