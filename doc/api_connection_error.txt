@@ -1,0 +1,10 @@
+2158
+予想時間 0 時間
+60
+#<Twitter::Error: Failed to open TCP connection to api.twitter.com:443 (getaddrinfo: nodename nor servname provided, or not known)>
+^CTraceback (most recent call last):
+	4: from momoka.rb:152:in `<main>'
+	3: from momoka.rb:152:in `each'
+	2: from momoka.rb:159:in `block in <main>'
+	1: from momoka.rb:163:in `rescue in block in <main>'
+momoka.rb:163:in `sleep': Interrupt
