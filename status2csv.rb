@@ -25,15 +25,22 @@ File.open(ARGV[1], 'r') do |f|
       if status_rows.has_key?(account)
         puts "#{line},#{status_rows[account]},"
       else
+
+        find_flag = false
+
         #大文字小文字対策
         status_rows.keys.each do |db_account_name|
           #puts "#{db_account_name} #{account}"
           if db_account_name.casecmp(account) == 0
             puts "#{line},#{status_rows[db_account_name]},#{db_account_name}"
+            find_flag = true
             break
           end
         end
 
+        if find_flag == false
+          puts "#{line},,"
+        end
       end
     else
       puts ','
