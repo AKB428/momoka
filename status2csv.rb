@@ -15,7 +15,6 @@ status_rows = @db[:twitter_follwer_status].reverse(:follower).select_hash(:scree
 #  puts "#{k},#{v}"
 #end
 
-
 File.open(ARGV[1], 'r') do |f|
   while line  = f.gets
     line = line.chomp
@@ -23,7 +22,19 @@ File.open(ARGV[1], 'r') do |f|
 
       account = line.split('/')[3]
 
-      puts "#{line},#{status_rows[account]}"
+      if status_rows.has_key?(account)
+        puts "#{line},#{status_rows[account]},"
+      else
+        #大文字小文字対策
+        status_rows.keys.each do |db_account_name|
+          #puts "#{db_account_name} #{account}"
+          if db_account_name.casecmp(account) == 0
+            puts "#{line},#{status_rows[db_account_name]},#{db_account_name}"
+            break
+          end
+        end
+
+      end
     else
       puts ','
     end
