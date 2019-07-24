@@ -19,6 +19,8 @@ File.open(ARGV[1], 'r') do |f|
   while line  = f.gets
     line = line.chomp
     if line != ''
+      #リクエストパラメーター除去
+      line = line.gsub(/\?.*/, '')
 
       account = line.split('/')[3]
 

@@ -136,6 +136,10 @@ account_list = []
 File.open(ARGV[1], 'r') do |f|
   while line  = f.gets
     line = line.chomp
+
+    #リクエストパラメーター除去
+    line = line.gsub(/\?.*/, '')
+
     account_list << line.split('/')[3] if line != ''
   end
 end
