@@ -136,6 +136,10 @@ account_list = []
 File.open(ARGV[1], 'r') do |f|
   while line  = f.gets
     line = line.chomp
+
+    #リクエストパラメーター除去
+    line = line.gsub(/\?.*/, '')
+
     account_list << line.split('/')[3] if line != ''
   end
 end
@@ -177,6 +181,10 @@ account_list.each_slice(ONE_REQUEST_LIMIT_NUM).to_a.each do |account_slist|
 end
 
 p account_list - @twitter_result_account
+
+diff_size = account_list.length - @twitter_result_account.length
+
+puts "#{diff_size} = #{account_list.length} - #{@twitter_result_account.length}"
 
 #処理を終了する ループはcrontabでやる
 #６時間に１度ぐらいで
