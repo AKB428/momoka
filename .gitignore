@@ -16,3 +16,4 @@ mkmf.log
 *.iml
 conf/conf.json
 .DS_Store
+/vendor/
