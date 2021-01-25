@@ -39,7 +39,7 @@ end
 @status_total_rows = []
 
 CSV.open(csv_file_name,'a') do |csv|
-  csv << %w(screen_name name url description profile_image_url_https followers_count favorites_count friends_count listed_count statuses_count)
+  csv << %w(id screen_name name url description location profile_image_url_https created_at followers_count favorites_count friends_count listed_count statuses_count)
 end
 
 def connect_twitter(account_list)
@@ -47,11 +47,14 @@ def connect_twitter(account_list)
     # https://rdoc.info/gems/twitter/Twitter/REST/Users#users-instance_method
     @tw.users(account_list).each do |user|
       status_rows << [
+          user.id,
           user.screen_name,
           user.name,
           "https://twitter.com/#{user.screen_name}",
           user.description,
+          user.location,
           user.profile_image_url_https, #48x48
+          user.created_at,
           user.followers_count,
           user.favorites_count,
           user.friends_count,
