@@ -1,28 +1,46 @@
 require 'pp'
 require "./twitter.rb"
 require "csv"
+require "fileutils"
 
 #https://rdoc.info/gems/twitter/Twitter/REST/Client
-
-# 第一引数に対象のアカウントを指定、基本的用途としては自分のscreen_nameを指定することを想定
-follower_list =  @tw.friend_ids(ARGV[0]).attrs[:ids]
-
-puts follower_list.size
-
-# 15分 900 = 1時間 3600
-cost_hour = follower_list.size / 3600
-puts "予想時間 #{cost_hour} 時間"
 
 ONE_REQUEST_LIMIT_NUM = 60
 ONE_REQUEST_SLEEP_SEC = 60
 
-csv_file_name = './private/follower_list.csv'
+CSV_FOLDER = 'private'
+
+target_twitter_account = ARGV[0]
+
+# CSVを出力するフォルダを作成
+FileUtils.mkdir_p(CSV_FOLDER) unless File.exists?(CSV_FOLDER)
+
+csv_file_name = "./#{CSV_FOLDER}/#{target_twitter_account}_follower_list.csv"
+
+# 第一引数に対象のアカウントを指定、基本的用途としては自分のscreen_nameを指定することを想定
+follower_list =  @tw.friend_ids(target_twitter_account).attrs[:ids]
+
+# フォローが新しい順に入っているので古いものを先にする
+follower_list.reverse!
+
+puts follower_list.size
+
+# 15分 900 = 1時間 3600
+cost_hour = follower_list.size / 3600.to_f
+puts "予想時間 #{cost_hour} 時間"
+
+cost_hour_min = follower_list.size / ONE_REQUEST_LIMIT_NUM
+puts "予想分数 #{cost_hour_min} 分"
 
 if File.exist?(csv_file_name)
   File.delete csv_file_name
 end
 
 @status_total_rows = []
+
+CSV.open(csv_file_name,'a') do |csv|
+  csv << %w(screen_name name url description profile_image_url_https followers_count favorites_count friends_count listed_count statuses_count)
+end
 
 def connect_twitter(account_list)
     status_rows = []
@@ -33,12 +51,12 @@ def connect_twitter(account_list)
           user.name,
           "https://twitter.com/#{user.screen_name}",
           user.description,
-          user.profile_image_url_https,
+          user.profile_image_url_https, #48x48
           user.followers_count,
           user.favorites_count,
           user.friends_count,
           user.listed_count,
-          user.profile_image_url.to_s,
+          #user.profile_image_url.to_s,
           user.statuses_count
       ]
     end
