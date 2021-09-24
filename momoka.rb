@@ -40,7 +40,7 @@ BBB
 
 @today = DateTime.now
 
-@db = Sequel.mysql2(ARGV[0], :host=>'localhost', :user=>'root', :password=>'', :port=>'3306')
+@db = Sequel.mysql2(ARGV[0], :host=>ENV['MOMOKA_DB_HOST'], :user=>ENV['MOMOKA_DB_USER'], :password=>ENV['MOMOKA_DB_PASSWORD'], :port=>'3306')
 
 @status_rows = []
 @history_rows = []
